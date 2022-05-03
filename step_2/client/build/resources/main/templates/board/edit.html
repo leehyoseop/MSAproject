@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 수정</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+
+        .titleTd {
+            background-color: darkgray;
+            font-weight:bold;
+            text-align: center;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            let pathname = $(location).attr('pathname');
+            let boardId = pathname.substring(18);
+            $.ajax({
+                type:"get",
+                url:"/clientboard/getboard/"+boardId,
+                dataType:"json",
+                success:function (data){
+                    $(data).each(function (i, item){
+                        let id = item.id;
+                        let title = item.title;
+                        let contents = item.contents;
+
+                        console.log(id,title,contents);
+                        $("#title").val(title);
+                        $("#contents").val(contents);
+                    })
+
+                },
+                error:function (){
+                    alert("ajax 연결 실패");
+                }
+            })
+            $("#btnMoveList").click(function() {
+                location.href = "/clientboard";
+            });
+            $("#btnCancel").click(function() {
+                location.href = "/clientboard/"+boardId;
+            });
+            $("#btnMod").click(function() {
+                let title = $("#title").val();
+
+                if (title == "") {
+                    alert("제목을 입력하세요.");
+                    $("#title").focus();
+                    return;
+                }
+
+                if (title.length > 50) {
+                    alert("제목은 50자를 초과해서 입력할 수 없습니다.");
+                    $("#title").focus();
+                    return;
+                }
+
+                let contents = $("#contents").val();
+
+                if (contents == "") {
+                    alert("내용을 입력하세요.");
+                    $("#contents").focus();
+                    return;
+                }
+
+                if (confirm('수정하시겠습니까?')) {
+                    let sendid  =  boardId;
+                    let sendtitle = $("#title").val();
+                    let sendcontents = $("#contents").val();
+                    var jsonObject  =  {
+                        "id" : sendid,
+                        "title" : sendtitle,
+                        "contents" : sendcontents
+                    }
+                    $.ajax({
+                        type: "put",
+                        url: "http://localhost:8082/clientboard/"+boardId,
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(jsonObject),
+                        success: function () {
+                            //alert("수정 성공");
+                            location.href = "/clientboard/";
+                        },
+                        error: function () {
+                            alert("error");
+                        }
+                    });
+                    //$("#modBoardForm").attr("th:action","@{/clientboard/{id}(id = "+ boardId +")}");
+                    //$("#modBoardForm").submit();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 수정</h2>
+        <div>
+            <button id="btnMoveList" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">목록</button>
+            <button id="btnCancel" type="button" class="btn btn-sm btn-secondary" style="float:right;margin-bottom:10px;margin-right:8px;">취소</button>
+            <button id="btnMod" type="button" class="btn btn-sm btn-success" style="float:right;margin-bottom:10px;margin-right:8px;">수정</button>
+        </div>
+        <div class="table-responsive">
+            <form id="modBoardForm">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <colgroup>
+                        <col style="width:10%" />
+                        <col style="width:auto" />
+                    </colgroup>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="titleTd">제목</td>
+                        <td><input type="text" id="title" style="width: 100%" maxlength="50" /></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">내용</td>
+                        <td>
+                                <textarea id="contents"
+                                          cols="10"
+                                          style="width: 100%;height: 15em;resize: none;"></textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</article>
+</body>
+</html>

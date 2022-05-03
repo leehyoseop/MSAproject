@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 목록</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha384-fJU6sGmyn07b+uD1nMk7/iSb4yvaowcueiQhfVgQuD98rfva8mcr1eSvjchfpMrH" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        function goDetail(id) {
+            let url = /*[[@{/clientboard/}]]*/ "/clientboard/";
+            location.href = url + id;
+        }
+
+        $(document).ready(function() {
+            $("#btnMoveWriteForm").click(function() {
+                location.href = /*[[@{/clientboard/new}]]*/ "clientboard/new";
+            });
+
+            $.ajax({
+                type:"GET",
+                url:"/clientboard/getboardlist",
+                dataType:"json",
+                success:function (data){
+                    $(data).each(function(i, item){
+                        let id = item.id;
+                        let title = item.title;
+                        let regDt = item.regDt;
+                        let td1 = $("<td></td>").text(id);
+                        let td2 = $("<td></td>").text(title);
+                        let td3 = $("<td></td>").text(regDt);
+                        let tr = $("<tr></tr>").append(td1, td2, td3);
+                        tr.attr("onclick","goDetail(\'" + id +"\');");
+                        $("#BoardTbl").append(tr);
+                    })
+                },
+                error: function (){
+                    alert("error");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 목록</h2>
+        <div>
+            <button id="btnMoveWriteForm" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">등록</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <colgroup>
+                    <col style="width:10%" />
+                    <col style="width:auto" />
+                    <col style="width:10%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">ID</th>
+                        <th style="text-align: center;">제목</th>
+                        <th style="text-align: center;">등록일자</th>
+                    </tr>
+                </thead>
+                <!--
+                <tbody>
+                    <tr th:if="${#lists.size(list)} > 0" th:each="board : ${list}" style="cursor: pointer;"
+                        th:onclick="'javascript:goDetail(\'' + ${board.id} + '\');'">
+                        <td style="text-align: center;" th:text="${board.id}"></td>
+                        <td th:text="${board.title}"></td>
+                        <td style="text-align: center;" th:text="${#temporals.format(board.regDt, 'yyyy-MM-dd')}"></td>
+                    </tr>
+                    <tr th:unless="${#lists.size(list)} > 0">
+                        <td colspan="3" style="text-align: center;">등록된 게시물이 없습니다.</td>
+                    </tr>
+                </tbody>
+                -->
+                <tbody id="BoardTbl">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+</body>
+</html>

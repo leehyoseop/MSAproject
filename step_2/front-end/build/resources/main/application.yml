@@ -1,0 +1,44 @@
+# spring.application.name : Application Name 지정 (front-end로 고정)
+# spring.datasource : 연결 DB 설정
+# spring.mvc.hiddenmethod.filter.enabled : MVC 환경에서의 Hidden Method 사용 여부 확인 (Form 을 통해 PUT, DELETE 사용하고자 할 때 필요함)
+spring:
+  application:
+    name: front-end
+  datasource:
+    #url: jdbc:mysql://34.125.183.206:3306/lee/datasolution?characterEncoding=UTF-8
+    url: jdbc:mysql://34.125.183.206:3306/mysql?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: "1"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+# mybatis 설정 (mybatis-config.xml 파일 생성하지 않기 위함)
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+    - /mapper/**/*.xml
+
+# server.port : 8080 으로 고정
+# server.servlet.encoding : Embedded Tomcat의 인코딩 설정
+# server.shutdown
+#  : Spring Boot 2.3 버전 이후부터 재공되는 기능
+#  : 정상적으로 종료할 수 있도록 기다려주는 기본 시간은 30초. 만약 조정하고 싶다면 spring.lifecycle.timeout-per-shutdown-phase=1m 처럼 옵션 추가
+server:
+  port: 8081
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  shutdown: graceful
+
+# management.endpoints.web.exposure.include : Actuator Open URI 지정. 여기서는 "health,info" 지정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"

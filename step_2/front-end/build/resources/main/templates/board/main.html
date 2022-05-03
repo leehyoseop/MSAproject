@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 목록</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        function goDetail(id) {
+            let url = /*[[@{/board/}]]*/ "/board/";
+            location.href = url + id;
+        }
+
+        $(document).ready(function() {
+            $("#btnMoveWriteForm").click(function() {
+                location.href = /*[[@{/board/new}]]*/ "/board/new";
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 목록</h2>
+        <div>
+            <button id="btnMoveWriteForm" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">등록</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <colgroup>
+                    <col style="width:10%" />
+                    <col style="width:auto" />
+                    <col style="width:10%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">ID</th>
+                        <th style="text-align: center;">제목</th>
+                        <th style="text-align: center;">등록일자</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.size(list)} > 0" th:each="board : ${list}" style="cursor: pointer;"
+                        th:onclick="'javascript:goDetail(\'' + ${board.id} + '\');'">
+                        <td style="text-align: center;" th:text="${board.id}"></td>
+                        <td th:text="${board.title}"></td>
+                        <td style="text-align: center;" th:text="${#temporals.format(board.regDt, 'yyyy-MM-dd')}"></td>
+                    </tr>
+                    <tr th:unless="${#lists.size(list)} > 0">
+                        <td colspan="3" style="text-align: center;">등록된 게시물이 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+</body>
+</html>
