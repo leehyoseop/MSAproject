@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 수정</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+
+        .titleTd {
+            background-color: darkgray;
+            font-weight:bold;
+            text-align: center;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            $("#btnMoveList").click(function() {
+                location.href = /*[[@{/board}]]*/ "/board";
+            });
+
+            $("#btnCancel").click(function() {
+                location.href = /*[[@{/board/{id}(id = ${info.id})}]]*/ "/board/0";
+            });
+
+            $("#btnMod").click(function() {
+                let title = $("#title").val();
+
+                if (title == "") {
+                    alert("제목을 입력하세요.");
+                    $("#title").focus();
+                    return;
+                }
+
+                if (title.length > 50) {
+                    alert("제목은 50자를 초과해서 입력할 수 없습니다.");
+                    $("#title").focus();
+                    return;
+                }
+
+                let contents = $("#contents").val();
+
+                if (contents == "") {
+                    alert("내용을 입력하세요.");
+                    $("#contents").focus();
+                    return;
+                }
+
+                if (confirm('수정하시겠습니까?')) {
+                    $("#modBoardForm").submit();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 수정</h2>
+        <div>
+            <button id="btnMoveList" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">목록</button>
+            <button id="btnCancel" type="button" class="btn btn-sm btn-secondary" style="float:right;margin-bottom:10px;margin-right:8px;">취소</button>
+            <button id="btnMod" type="button" class="btn btn-sm btn-success" style="float:right;margin-bottom:10px;margin-right:8px;">수정</button>
+        </div>
+        <div class="table-responsive">
+            <form id="modBoardForm" th:object="${info}" th:action="@{/board/{id}(id = ${info.id})}" th:method="put">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <colgroup>
+                        <col style="width:10%" />
+                        <col style="width:auto" />
+                    </colgroup>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="titleTd">제목</td>
+                        <td><input type="text" id="title" th:field="*{title}" style="width: 100%" maxlength="50"/></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">내용</td>
+                        <td>
+                                <textarea id="contents" th:field="*{contents}"
+                                          cols="10"
+                                          style="width: 100%;height: 15em;resize: none;"></textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</article>
+</body>
+</html>
