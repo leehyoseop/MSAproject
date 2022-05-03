@@ -83,7 +83,7 @@ public class WebClientController {
      * 게시물 수정 처리
      */
     @PutMapping("{id}")
-    public String modClientBoard(@PathVariable("id") int id,@RequestBody BoardDto boardDto){
+    public String modClientBoard(@PathVariable("id") int id, @RequestBody BoardDto boardDto){
         webClientService.modClientBoard(id, boardDto);
         return "board/main";
     }
