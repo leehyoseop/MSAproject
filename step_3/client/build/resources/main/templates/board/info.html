@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 상세조회</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+
+        .titleTd {
+            background-color: darkgray;
+            font-weight:bold;
+            text-align: center;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            let pathname = $(location).attr('pathname');
+            let boardId = pathname.substring(13);
+            $("#removeBoardForm").attr("th:action","@{/clientboard/{id}(id = "+ boardId +")}");
+
+            $.ajax({
+                type:"get",
+                url:"/clientboard/getboard/"+boardId,
+                dataType:"json",
+                success:function (data){
+                    $(data).each(function (i, item){
+                        let id = item.id;
+                        let title = item.title;
+                        let content = item.contents;
+                        let regDt = item.regDt;
+                        let updDt = item.updDt;
+                        console.log(id,title,content,regDt);
+                        $("#title").html(title);
+                        $("#content").html(content);
+                        $("#regDt").html(regDt);
+                        $("#updDt").html(updDt);
+                    })
+
+                },
+                error:function (){
+                    alert("ajax 연결 실패");
+                }
+            })
+
+            $("#btnMoveList").click(function() {
+                location.href = /*[[@{/clientboard}]]*/ "/clientboard";
+            });
+
+            $("#btnMoveModifyForm").click(function() {
+                location.href =  "/clientboard/edit/" + boardId;
+            });
+
+            $("#btnDelete").click(function() {
+                if (confirm("삭제하시겠습니까?")) {
+                    $("#removeBoardForm").submit();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 상세조회</h2>
+        <div>
+            <button id="btnMoveList" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">목록</button>
+            <button id="btnDelete" type="button" class="btn btn-sm btn-danger" style="float:right;margin-bottom:10px;margin-right:8px;">삭제</button>
+            <button id="btnMoveModifyForm" type="button" class="btn btn-sm btn-warning" style="float:right;margin-bottom:10px;margin-right:8px;">수정</button>
+        </div>
+        <div class="table-responsive">
+            <form id="removeBoardForm" th:method="delete">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <colgroup>
+                        <col style="width:10%" />
+                        <col style="width:auto" />
+                    </colgroup>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="titleTd">제목</td>
+                        <td id="title"></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">내용</td>
+                        <td>
+                            <textarea id="content"
+                                      readonly="readonly"
+                                      cols="10"
+                                      style="width: 100%;height: 15em;border: none;resize: none;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">등록일시</td>
+                        <td id="regDt"></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">수정일시</td>
+                        <td id="updDt"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</article>
+</body>
+</html>

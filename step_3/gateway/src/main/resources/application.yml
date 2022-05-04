@@ -1,0 +1,23 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: frontEndService
+          uri : http://localhost:8081
+          predicates:
+            - Path=/board/**
+          filters:
+            - AddRequestHeader=first-request, first-requests-header1
+            - AddResponseHeader=first-response, first-response-header1
+        - id: clientService
+          uri : http://localhost:8082
+          predicates:
+            - Path=/clientboard/**
+          filters:
+            - AddRequestHeader=second-request, second-requests-header2
+            - AddResponseHeader=second-response, second-response-header2
