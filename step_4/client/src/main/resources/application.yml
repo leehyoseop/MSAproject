@@ -1,0 +1,18 @@
+server:
+  port: 8082
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  shutdown: graceful
+
+spring:
+  application:
+    name: client
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+

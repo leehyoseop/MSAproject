@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 상세조회</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 70px;
+            padding-bottom: 30px;
+        }
+
+        .titleTd {
+            background-color: darkgray;
+            font-weight:bold;
+            text-align: center;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(document).ready(function() {
+            $("#btnMoveList").click(function() {
+                location.href = /*[[@{/board}]]*/ "/board";
+            });
+
+            $("#btnMoveModifyForm").click(function() {
+                location.href = /*[[@{/board/{id}/edit(id = ${info.id})}]]*/ "/board/0/edit";
+            });
+
+            $("#btnDelete").click(function() {
+                if (confirm("삭제하시겠습니까?")) {
+                    $("#removeBoardForm").submit();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<article>
+    <div class="container">
+        <h2>게시물 상세조회</h2>
+        <div>
+            <button id="btnMoveList" type="button" class="btn btn-sm btn-primary" style="float:right;margin-bottom:10px;">목록</button>
+            <button id="btnDelete" type="button" class="btn btn-sm btn-danger" style="float:right;margin-bottom:10px;margin-right:8px;">삭제</button>
+            <button id="btnMoveModifyForm" type="button" class="btn btn-sm btn-warning" style="float:right;margin-bottom:10px;margin-right:8px;">수정</button>
+        </div>
+        <div class="table-responsive">
+            <form id="removeBoardForm" th:action="@{/board/{id}(id = ${info.id})}" th:method="delete"></form>
+            <table th:object="${info}" class="table table-bordered table-sm">
+                <thead>
+                    <colgroup>
+                        <col style="width:10%" />
+                        <col style="width:auto" />
+                    </colgroup>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="titleTd">제목</td>
+                        <td th:text="*{title}"></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">내용</td>
+                        <td>
+                            <textarea th:field="*{contents}"
+                                      readonly="readonly"
+                                      cols="10"
+                                      style="width: 100%;height: 15em;border: none;resize: none;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">등록일시</td>
+                        <td th:text="${#temporals.format(info.regDt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                    <tr>
+                        <td class="titleTd">수정일시</td>
+                        <td th:text="${#temporals.format(info.updDt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+</body>
+</html>
